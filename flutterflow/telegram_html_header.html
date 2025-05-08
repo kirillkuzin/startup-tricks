@@ -1,0 +1,41 @@
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+    Telegram.WebApp.ready();
+
+    // Expand mini app from start and fix swipes bug
+    Telegram.WebApp.expand();
+    Telegram.WebApp.disableVerticalSwipes();
+
+    function getTelegramInitData() {
+        const params = new URLSearchParams(Telegram.WebApp.initData);
+        const userData = Object.fromEntries(params);
+        userData.user = JSON.parse(userData.user);
+        return JSON.stringify(userData);
+    }
+
+    function getTelegramInitDataRaw() {
+        return Telegram.WebApp.initData;
+    }
+
+    function getTelegramPayload() {
+        const params = new URLSearchParams(window.location.search);
+        const raw = params.get("payload");
+        if (!raw) return null;
+        try {
+            const payload = JSON.parse(raw);
+            return JSON.stringify(payload);
+        } catch (e) {
+            console.error("Failed to parse payload:", e);
+            return null;
+        }
+    }
+
+    function sendResult(result) {
+        Telegram.WebApp.sendData(JSON.stringify(result));
+        Telegram.WebApp.close();
+    }
+
+    function closeWebApp() {
+        Telegram.WebApp.close();
+    }
+</script>
